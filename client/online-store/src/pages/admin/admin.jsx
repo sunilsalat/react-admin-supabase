@@ -5,6 +5,7 @@ import {
   ListGuesser,
   Resource,
   nanoLightTheme,
+  localStorageStore,
 } from "react-admin";
 import { dataProvider } from "../../utils/dataProvider";
 import { authProvider } from "../../utils/authProvider";
@@ -15,6 +16,8 @@ import { MyError } from "../../components/myError";
 import PressReleases from "./pressReleases";
 import Products from "./products";
 
+const store = localStorageStore(undefined, "ECommerce");
+
 function MyAdmin() {
   return (
     <Admin
@@ -24,7 +27,7 @@ function MyAdmin() {
       requireAuth
       loginPage={LoginPage}
       error={MyError}
-      theme={nanoLightTheme}
+      // theme={nanoLightTheme}
       layout={Layout}
       disableTelemetrys
     >

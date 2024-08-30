@@ -3,13 +3,12 @@ import { AppBar, TitlePortal } from "react-admin";
 import { Box, useMediaQuery } from "@mui/material";
 
 import Logo from "./logo.jsx";
-// import { AppBarToolbar } from "./appBarToolbar.jsx";
+import { AppBarToolbar } from "./appBarToolBar.jsx";
 
 const CustomAppBar = () => {
   const isLargeEnough = useMediaQuery((theme) => theme.breakpoints.up("sm"));
   return (
-    // <AppBar color="secondary" toolbar={<AppBarToolbar />}>
-    <AppBar color="secondary">
+    <AppBar color="secondary" toolbar={<AppBarToolbar />}>
       <TitlePortal />
       {isLargeEnough && <Logo />}
       {isLargeEnough && <Box component="span" sx={{ flex: 1 }} />}

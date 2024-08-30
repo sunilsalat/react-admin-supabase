@@ -88,7 +88,7 @@ const Menu = ({ dense = false }) => {
       <MenuItemLink
         to="/admin/products"
         state={{ _scrollToTop: true }}
-        primaryText={translate(`Press Releases`, {
+        primaryText={translate(`Products`, {
           smart_count: 2,
         })}
         leftIcon={<Products.icon />}
