@@ -28,6 +28,8 @@ export const ThemeSwapper = () => {
     _: "Change Theme",
   });
 
+  const ucFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
   return (
     <>
       <Tooltip title={toggleThemeTitle} enterDelay={300}>
@@ -55,5 +57,3 @@ export const ThemeSwapper = () => {
     </>
   );
 };
-
-const ucFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);

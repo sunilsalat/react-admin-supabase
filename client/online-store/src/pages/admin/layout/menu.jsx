@@ -45,23 +45,23 @@ const Menu = ({ dense = false }) => {
       <SubMenu
         handleToggle={() => handleToggle("products")}
         isOpen={state.products}
-        name="Properties"
+        name="Items"
         icon={<PressReleases.icon />}
         dense={dense}
       >
         <MenuItemLink
-          to="/admin/press_releases"
+          to="/admin/books"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`Spa`, {
+          primaryText={translate(`Books`, {
             smart_count: 2,
           })}
           leftIcon={<PressReleases.icon />}
           dense={dense}
         />
         <MenuItemLink
-          to="/admin/press_releases"
+          to="/admin/laptops"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`Hotels`, {
+          primaryText={translate(`Laptops`, {
             smart_count: 2,
           })}
           leftIcon={<PressReleases.icon />}
@@ -86,9 +86,9 @@ const Menu = ({ dense = false }) => {
         />
       </SubMenu>
       <MenuItemLink
-        to="/admin/products"
+        to="/admin/press_releases"
         state={{ _scrollToTop: true }}
-        primaryText={translate(`Products`, {
+        primaryText={translate(`Press Releases`, {
           smart_count: 2,
         })}
         leftIcon={<Products.icon />}

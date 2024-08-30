@@ -7,7 +7,7 @@ import {
   TextInput,
 } from "react-admin";
 
-export const productEdit = () => (
+export const itemEdit = () => (
   <Edit mutationMode="pessimistic">
     <SimpleForm warnWhenUnsavedChanges>
       <TextInput source="unique_id" disabled />

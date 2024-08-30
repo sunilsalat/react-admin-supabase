@@ -13,7 +13,7 @@ import {
   TopToolbar,
 } from "react-admin";
 
-export const productList = () => (
+export const itemList = () => (
   <List
     filters={[<SearchInput source="name" alwaysOn />]}
     actions={
