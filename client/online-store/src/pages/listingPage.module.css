@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    background-color: red;
+}
+
+.childContainer {
+    flex: 1;
+    padding: 10px;
+}
