@@ -569,3 +569,4 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
 -- property, vote, email_fingerprint >table
 -- create separate payment table
 -- implement inheritence in porperty table
+

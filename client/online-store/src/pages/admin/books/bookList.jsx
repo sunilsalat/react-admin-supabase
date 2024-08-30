@@ -5,7 +5,7 @@ import {
   DateField,
   ExportButton,
   List,
-  NumberField,
+  NumberInput,
   ReferenceField,
   SearchInput,
   SelectColumnsButton,
@@ -13,7 +13,7 @@ import {
   TopToolbar,
 } from "react-admin";
 
-export const itemList = () => (
+export const bookList = () => (
   <List
     filters={[<SearchInput source="name" alwaysOn />]}
     actions={
@@ -25,13 +25,10 @@ export const itemList = () => (
     }
   >
     <DatagridConfigurable>
-      <TextField source="unique_id" />
       <TextField source="name" />
-      <TextField source="description" />
-      <TextField source="type" />
-      <NumberField source="price" />
-      <NumberField source="sale_price" />
-      <NumberField source="discount" />
+      <TextField source="author" />
+      <TextField source="sold_times" />
+      <TextField source="price" />
       <ReferenceField source="currency_id" reference="currencies" />
     </DatagridConfigurable>
   </List>

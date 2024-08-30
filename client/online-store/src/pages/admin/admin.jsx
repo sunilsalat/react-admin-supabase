@@ -4,7 +4,6 @@ import {
   EditGuesser,
   ListGuesser,
   Resource,
-  nanoLightTheme,
   localStorageStore,
   useStore,
 } from "react-admin";
@@ -17,7 +16,8 @@ import { themes } from "./themes/themes";
 import { MyError } from "../../components/myError";
 import PressReleases from "./pressReleases";
 import Products from "./products";
-import Items from "./items";
+import Books from "./books";
+import Laptops from "./laptops";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -49,8 +49,9 @@ function MyAdmin() {
       </CustomRoutes>
       <Resource name="press_releases" {...PressReleases} />
       <Resource name="products" {...Products} />
-      <Resource name="books" {...Items} />
-      <Resource name="laptops" {...Items} />
+      <Resource name="books" {...Books} />
+      <Resource name="laptops" {...Laptops} />
+      <Resource name="currencies" />
     </Admin>
   );
 }
