@@ -10,14 +10,10 @@ import { dataProvider } from "../../utils/dataProvider";
 import { authProvider } from "../../utils/authProvider";
 import { ForgotPasswordPage, LoginPage, SetPasswordPage } from "ra-supabase";
 import { Route } from "react-router-dom";
-import { userCreate, userEdit, userList } from "./users";
-import {
-  pressReleasesList,
-  pressReleasesCreate,
-  pressReleasesEdit,
-} from "./pressReleases";
+import { Layout } from "./layout";
 import { MyError } from "../../components/myError";
-import { productCreate, productEdit, productList } from "./products";
+import PressReleases from "./pressReleases";
+import Products from "./products";
 
 function MyAdmin() {
   return (
@@ -29,7 +25,7 @@ function MyAdmin() {
       loginPage={LoginPage}
       error={MyError}
       theme={nanoLightTheme}
-      // layout={}
+      layout={Layout}
       disableTelemetrys
     >
       <CustomRoutes noLayout>
@@ -39,28 +35,8 @@ function MyAdmin() {
           element={<ForgotPasswordPage />}
         />
       </CustomRoutes>
-      <Resource
-        name="press_releases"
-        options={{ label: "Press Releases" }}
-        list={pressReleasesList}
-        create={pressReleasesCreate}
-        edit={pressReleasesEdit}
-      />
-      <Resource
-        name="profile"
-        options={{ label: "Users" }}
-        list={userList}
-        edit={userEdit}
-        create={userCreate}
-      />
-      <Resource
-        name="products"
-        options={{ label: "Products" }}
-        list={productList}
-        edit={productEdit}
-        create={productCreate}
-        recordRepresentation="name"
-      />
+      <Resource name="press_releases" {...PressReleases} />
+      <Resource name="products" {...Products} />
     </Admin>
   );
 }
