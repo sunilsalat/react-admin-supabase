@@ -1,21 +1,34 @@
 import {
+  BooleanInput,
   Create,
   DateInput,
-  Edit,
-  ReferenceField,
+  NumberInput,
   ReferenceInput,
   SimpleForm,
-  TextField,
   TextInput,
 } from "react-admin";
 export const reviewCreate = (props) => (
   <Create {...props}>
     <SimpleForm>
-      <TextInput source="name" />
-      <TextInput source="code" />
-      <TextInput source="continent_codes" />
-      <TextInput source="region_codes" />
-      <TextInput source="locale" />
+      <SelectInput
+        source="entity_type"
+        choices={[
+          { id: "tech", name: "products" },
+          { id: "lifestyle", name: "spa" },
+          { id: "people", name: "restaurant" },
+          { id: "people", name: "hotel" },
+        ]}
+      />
+      <ReferenceInput source="entity_id" />
+      <ReferenceInput source="profile_id" reference="profiles" />
+      <TextInput source="reviewer_name" />
+      <TextInput source="reviewer_email" />
+      <TextInput source="reviewer_note" />
+      <NumberInput source="overall_rating" />
+      <BooleanInput source="verified" />
+      <TextInput source="verification_code" />
+      <TextInput source="unique_id" />
+      <DateInput source="created_at" />
     </SimpleForm>
   </Create>
 );

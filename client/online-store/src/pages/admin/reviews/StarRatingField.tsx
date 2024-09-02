@@ -21,7 +21,7 @@ const StarRatingField = ({ size = 'large' }: FieldProps & OwnProps) => {
                 whiteSpace: 'nowrap',
             }}
         >
-            {Array(record.rating)
+            {Array(record.overall_rating)
                 .fill(true)
                 .map((_, i) => (
                     <Icon

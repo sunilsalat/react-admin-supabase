@@ -79,13 +79,11 @@ export const productEdit = () => (
               },
             }}
           >
-            <DateField source="date" />
+            <DateField source="created_at" />
             {/* <CustomerReferenceField source="customer_id" /> */}
-            <StarRatingField
-              label="resources.reviews.fields.rating"
-              source="rating"
-            />
-            <TextField source="comment" />
+            <StarRatingField label="rating" source="overall_rating" />
+            <TextField source="reviewer_name" />
+            <TextField source="reviewer_note" />
             <TextField source="status" />
             <EditButton />
           </Datagrid>

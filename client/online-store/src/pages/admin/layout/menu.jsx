@@ -15,6 +15,7 @@ import PressReleases from "../pressReleases";
 import Books from "../books";
 import Nations from "../settings/nations";
 import SubMenu from "./subMenu";
+import Reviews from "../reviews";
 
 // type MenuName = "pressReleases" | "products";
 
@@ -96,6 +97,15 @@ const Menu = ({ dense = false }) => {
           smart_count: 2,
         })}
         leftIcon={<PressReleases.icon />}
+        dense={dense}
+      />
+      <MenuItemLink
+        to="/admin/reviews"
+        state={{ _scrollToTop: true }}
+        primaryText={translate(`Reviews`, {
+          smart_count: 2,
+        })}
+        leftIcon={<Reviews.icon />}
         dense={dense}
       />
       <SubMenu

@@ -313,12 +313,20 @@ CREATE TABLE IF NOT EXISTS resources_address (
   FOREIGN KEY (address_id) REFERENCES addresses (id)
 );
 
+CREATE TABLE IF NOT EXISTS organizations(
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name VARCHAR(255) NOT NULL,
+  unique_id VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
 -- property start 
 CREATE TABLE IF NOT EXISTS properties (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  orgnization_id UUID NOT NULL, -- ref
   name VARCHAR(255) NOT NULL,
-  is_company BOOLEAN DEFAULT NULL,
-  want_to_learn_more BOOLEAN DEFAULT NULL,
   property_type VARCHAR(255) NOT NULL,
   legal_name VARCHAR(255) DEFAULT '',
   tagline VARCHAR(255) DEFAULT '',
@@ -326,21 +334,88 @@ CREATE TABLE IF NOT EXISTS properties (
   price_range VARCHAR(255) DEFAULT '',
   amenity_feature TEXT[],
   amenity_feature_description TEXT DEFAULT '',
-  description TEXT DEFAULT '',
+  "description" TEXT DEFAULT '',
   email VARCHAR(255) NOT NULL,
-  nomination_category_ids UUID[],
-  social_links JSONB DEFAULT '{}',
-  featured BOOLEAN DEFAULT FALSE,
   visibility VARCHAR(50) DEFAULT 'PUBLIC',
-  overlay_mask BOOLEAN DEFAULT FALSE,
-  is_font_color_black BOOLEAN DEFAULT TRUE,
-  linked_property VARCHAR(255) DEFAULT '',
   global_location_number VARCHAR(255) DEFAULT '',
-  voting_eligible_years INT[],
   voting_division_id UUID REFERENCES nations(id),
-  winner_ids UUID[],
   slug VARCHAR(255) NOT NULL,
   unique_id VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (orgnization_id) REFERENCES organizations(id)
+);
+
+CREATE TABLE IF NOT EXISTS property_winners (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  country_id UUID NOT NULL,
+  region_id UUID NOT NULL,
+  continent_id UUID NOT NULL,
+  winner_category VARCHAR NOT NULL,
+  division_type VARCHAR NOT NULL,
+  "year" NOT NULL
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS property_voting_years (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  "voting_year" VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS featured_properties (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS property_nomination_categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  nomination_category_id UUID NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (nomination_category_id) REFERENCES(nomination_categories)
+) 
+
+CREATE TABLE IF NOT EXISTS property_social_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS properties_settings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID NOT NULL,
+  overlay_mask BOOLEAN DEFAULT FALSE, -- create properties_settings table to related settings, <review_email>
+  review_email VARCHAR(255),
+  is_font_color_black BOOLEAN DEFAULT TRUE, -- create properties_settings table to related settings
+  want_to_learn_more BOOLEAN DEFAULT NULL, -- goes in to properties_settings table
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+)
+
+CREATE TABLE IF NOT EXISTS property_booking_links (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
+  phone_number VARCHAR(255),
+  whatsapp_number VARCHAR(255),
+  booking_url VARCHAR(255),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP
@@ -351,15 +426,16 @@ CREATE TABLE IF NOT EXISTS spa (
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS restaurant (
-  restaurant_type TEXT,
+  cuisines TEXT[],
   maximum_attendee_capacity INT,
 ) INHERITS (properties);
+
 
 CREATE TABLE IF NOT EXISTS hotel (
   checkin_time VARCHAR(255),
   checkout_time VARCHAR(255),
   number_of_rooms INTEGER,
-  hotel_type TEXT DEFAULT 'HOTEL',
+  hotel_type TEXT DEFAULT 'HOTEL', -- not sure
 ) INHERITS (properties);
 
 CREATE TABLE IF NOT EXISTS category_aggregated_ratings (
@@ -385,25 +461,9 @@ CREATE TABLE IF NOT EXISTS aggregated_ratings (
   deleted_at TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS booking_links (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
-  phone_number VARCHAR(255),
-  whatsapp_number VARCHAR(255),
-  booking_url VARCHAR(255),
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP
-);
 
-CREATE TABLE IF NOT EXISTS notifications (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  property_id UUID UNIQUE REFERENCES properties(id) ON DELETE CASCADE,
-  review_email VARCHAR(255),
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP
-);
+
+
 
 CREATE TABLE IF NOT EXISTS review_categories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -425,7 +485,6 @@ CREATE TABLE IF NOT EXISTS reviews (
   reviewer_name VARCHAR(255),
   reviewer_email VARCHAR(255),
   reviewer_note TEXT,
-  review_category NOT NUll
   overall_rating NUMERIC CHECK (overall_rating >= 1 AND overall_rating <= 5),
   verified BOOLEAN DEFAULT FALSE,
   verification_code VARCHAR(255) DEFAULT '',
@@ -435,7 +494,18 @@ CREATE TABLE IF NOT EXISTS reviews (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
   FOREIGN KEY (profile_id) REFERENCES profile(user_id) ON DELETE CASCADE,
-  UNIQUE (profile_id,entity_id,review_category)
+  UNIQUE (profile_id,entity_id)
+);
+
+CREATE TABLE IF NOT EXISTS category_reviews (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  review_id UUID NOT NULL,
+  category_name VARCHAR(255) NOT NULL, 
+  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP,
+  FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
 );
 -- property end
 
@@ -515,3 +585,5 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
 -- create separate payment table
 -- implement inheritence in porperty table
 
+-- todo
+-- join table for properties_nominationcategories
