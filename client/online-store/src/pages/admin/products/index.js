@@ -1,7 +1,7 @@
 import { productList } from "./productList";
 import { productCreate } from "./productCreate";
 import { productEdit } from "./productEdit";
-import ProductIcon from "@mui/icons-material/Collections";
+import ProductIcon from "@mui/icons-material/Inventory";
 
 export default {
   list: productList,

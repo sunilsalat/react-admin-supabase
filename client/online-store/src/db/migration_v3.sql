@@ -213,7 +213,6 @@ CREATE TABLE order_invoices (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     invoice_id INT NOT NULL,
     order_id UUID NOT NULL,
-    -- profile_id UUID NOT NULL,
     invoice_date TIMESTAMP NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) NOT NULL, -- paid/unpaid/refnded
@@ -226,45 +225,6 @@ CREATE TABLE order_invoices (
     FOREIGN KEY (profile_id) REFERENCES profile(user_id)
 );
 
-
--- CREATE TABLE IF NOT EXISTS order_invoices (
---   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---   order_id UUID NOT NULL,
---   eft_bank TEXT,
---   eft_swift_code TEXT,
---   eft_account_name TEXT,
---   eft_account_number TEXT,
---   eft_account_type TEXT,
---   eft_branch_code TEXT,
---   eft_tax_code TEXT,
---   vat_number TEXT,
---   invoice_number INT DEFAULT 10001,
---   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   deleted_at TIMESTAMP DEFAULT NULL,
---   FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE
--- );
-
--- CREATE TABLE IF NOT EXISTS registrations (
---   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---   hotel_name VARCHAR(255) DEFAULT '',
---   spa_name VARCHAR(255) DEFAULT '',
---   restaurant_name VARCHAR(255) DEFAULT '',
---   agency_name VARCHAR(255) DEFAULT '',
---   primary_contact_name VARCHAR(40) NOT NULL,
---   primary_contact_email VARCHAR(150) NOT NULL,
---   primary_contact_phone VARCHAR(15) NOT NULL,
---   billing_name VARCHAR(255),
---   billing_address TEXT,
---   title VARCHAR(255),
---   order_id UUID,
---   unique_id VARCHAR(255) UNIQUE NOT NULL,
---   approval_state BOOLEAN DEFAULT FALSE,
---   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   deleted_at TIMESTAMP DEFAULT NULL,
---   FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE
--- );
 
 CREATE TABLE IF NOT EXISTS media (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -368,7 +328,6 @@ CREATE TABLE IF NOT EXISTS properties (
   amenity_feature_description TEXT DEFAULT '',
   description TEXT DEFAULT '',
   email VARCHAR(255) NOT NULL,
-  location GEOGRAPHY(POINT, 4326),
   nomination_category_ids UUID[],
   social_links JSONB DEFAULT '{}',
   featured BOOLEAN DEFAULT FALSE,
@@ -377,8 +336,6 @@ CREATE TABLE IF NOT EXISTS properties (
   is_font_color_black BOOLEAN DEFAULT TRUE,
   linked_property VARCHAR(255) DEFAULT '',
   global_location_number VARCHAR(255) DEFAULT '',
-  star_rating INT,
-  address_id UUID REFERENCES addresses(id) ON DELETE CASCADE,
   voting_eligible_years INT[],
   voting_division_id UUID REFERENCES nations(id),
   winner_ids UUID[],
@@ -405,7 +362,6 @@ CREATE TABLE IF NOT EXISTS hotel (
   hotel_type TEXT DEFAULT 'HOTEL',
 ) INHERITS (properties);
 
--- category wise agg ratings
 CREATE TABLE IF NOT EXISTS category_aggregated_ratings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   entity_type TEXT, 
@@ -418,7 +374,6 @@ CREATE TABLE IF NOT EXISTS category_aggregated_ratings (
   deleted_at TIMESTAMP
 );
 
--- store overall ratings
 CREATE TABLE IF NOT EXISTS aggregated_ratings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   entity_type TEXT, 
@@ -470,6 +425,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   reviewer_name VARCHAR(255),
   reviewer_email VARCHAR(255),
   reviewer_note TEXT,
+  review_category NOT NUll
   overall_rating NUMERIC CHECK (overall_rating >= 1 AND overall_rating <= 5),
   verified BOOLEAN DEFAULT FALSE,
   verification_code VARCHAR(255) DEFAULT '',
@@ -478,20 +434,9 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   deleted_at TIMESTAMP,
-  FOREIGN KEY (profile_id) REFERENCES profile(user_id) ON DELETE CASCADE
+  FOREIGN KEY (profile_id) REFERENCES profile(user_id) ON DELETE CASCADE,
+  UNIQUE (profile_id,entity_id,review_category)
 );
-
-CREATE TABLE IF NOT EXISTS category_reviews (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  review_id UUID NOT NULL,
-  category_name VARCHAR(255) NOT NULL,
-  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted_at TIMESTAMP,
-  FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
-);
-
 -- property end
 
 CREATE TABLE IF NOT EXISTS votes (
@@ -565,8 +510,6 @@ CREATE TABLE IF NOT EXISTS invoice_settings (
 );
 
 -- create invoice_settings_logs to capture invoice_settings history
-
-
 -- NEXT DISCUSSION
 -- property, vote, email_fingerprint >table
 -- create separate payment table

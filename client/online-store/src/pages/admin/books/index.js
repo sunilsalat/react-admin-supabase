@@ -1,4 +1,4 @@
-import ProductIcon from "@mui/icons-material/Collections";
+import ProductIcon from "@mui/icons-material/Label";
 import { bookCreate } from "./bookCreate";
 import { bookEdit } from "./bookEdit";
 import { bookList } from "./bookList";

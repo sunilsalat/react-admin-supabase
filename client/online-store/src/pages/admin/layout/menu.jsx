@@ -12,14 +12,18 @@ import {
 
 import Products from "../products";
 import PressReleases from "../pressReleases";
+import Books from "../books";
+import Nations from "../settings/nations";
 import SubMenu from "./subMenu";
 
-// type MenuName = "pressReleases" | "products" | "menuCustomers";
+// type MenuName = "pressReleases" | "products";
 
 const Menu = ({ dense = false }) => {
   const [state, setState] = useState({
-    pressReleases: true,
+    items: true,
     products: true,
+    pressReleases: true,
+    nations: true,
   });
   const translate = useTranslate();
   const [open] = useSidebarState();
@@ -43,10 +47,10 @@ const Menu = ({ dense = false }) => {
     >
       <DashboardMenuItem />
       <SubMenu
-        handleToggle={() => handleToggle("products")}
-        isOpen={state.products}
+        handleToggle={() => handleToggle("items")}
+        isOpen={state.items}
         name="Items"
-        icon={<PressReleases.icon />}
+        icon={<Books.icon />}
         dense={dense}
       >
         <MenuItemLink
@@ -55,7 +59,7 @@ const Menu = ({ dense = false }) => {
           primaryText={translate(`Books`, {
             smart_count: 2,
           })}
-          leftIcon={<PressReleases.icon />}
+          leftIcon={<Books.icon />}
           dense={dense}
         />
         <MenuItemLink
@@ -64,13 +68,13 @@ const Menu = ({ dense = false }) => {
           primaryText={translate(`Laptops`, {
             smart_count: 2,
           })}
-          leftIcon={<PressReleases.icon />}
+          leftIcon={<Books.icon />}
           dense={dense}
         />
       </SubMenu>
       <SubMenu
-        handleToggle={() => handleToggle("pressReleases")}
-        isOpen={state.pressReleases}
+        handleToggle={() => handleToggle("products")}
+        isOpen={state.products}
         name="Products"
         icon={<Products.icon />}
         dense={dense}
@@ -78,7 +82,7 @@ const Menu = ({ dense = false }) => {
         <MenuItemLink
           to="/admin/products"
           state={{ _scrollToTop: true }}
-          primaryText={translate(`Products One`, {
+          primaryText={translate(`Products`, {
             smart_count: 2,
           })}
           leftIcon={<Products.icon />}
@@ -91,9 +95,26 @@ const Menu = ({ dense = false }) => {
         primaryText={translate(`Press Releases`, {
           smart_count: 2,
         })}
-        leftIcon={<Products.icon />}
+        leftIcon={<PressReleases.icon />}
         dense={dense}
       />
+      <SubMenu
+        handleToggle={() => handleToggle("settings")}
+        isOpen={state.settings}
+        name="Settings"
+        icon={<Nations.icon />}
+        dense={dense}
+      >
+        <MenuItemLink
+          to="/admin/nations"
+          state={{ _scrollToTop: true }}
+          primaryText={translate(`Nations`, {
+            smart_count: 2,
+          })}
+          leftIcon={<Nations.icon />}
+          dense={dense}
+        />
+      </SubMenu>
     </Box>
   );
 };

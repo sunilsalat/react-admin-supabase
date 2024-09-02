@@ -18,6 +18,8 @@ import PressReleases from "./pressReleases";
 import Products from "./products";
 import Books from "./books";
 import Laptops from "./laptops";
+import Reviews from "./reviews";
+import Nations from "./settings/nations";
 
 const store = localStorageStore(undefined, "ECommerce");
 
@@ -49,8 +51,10 @@ function MyAdmin() {
       </CustomRoutes>
       <Resource name="press_releases" {...PressReleases} />
       <Resource name="products" {...Products} />
+      <Resource name="reviews" {...Reviews} />
       <Resource name="books" {...Books} />
       <Resource name="laptops" {...Laptops} />
+      <Resource name="nations" {...Nations} />
       <Resource name="currencies" />
     </Admin>
   );

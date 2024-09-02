@@ -13,6 +13,7 @@ export const bookCreate = (props) => (
       <TextInput source="name" />
       <TextInput source="price" />
       <TextInput source="author" />
+      <TextInput source="sold_times" />
       <ReferenceInput
         source="currency_id"
         reference="currencies"
